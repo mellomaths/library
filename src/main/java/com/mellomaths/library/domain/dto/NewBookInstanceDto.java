@@ -3,11 +3,13 @@ package com.mellomaths.library.domain.dto;
 import com.mellomaths.library.domain.BookInstance;
 import com.mellomaths.library.domain.BookInstanceType;
 import com.mellomaths.library.domain.utils.ValidateEnum;
+import org.hibernate.validator.constraints.ISBN;
 
 import javax.validation.constraints.NotBlank;
 
 public class NewBookInstanceDto {
     @NotBlank
+    @ISBN
     private String isbn;
 
     @NotBlank
