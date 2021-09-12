@@ -2,8 +2,6 @@ package com.mellomaths.library.domain.dto;
 
 import com.mellomaths.library.domain.Book;
 
-import java.math.BigDecimal;
-
 public class BookDto {
     protected String id;
     protected String creationDate;

@@ -2,11 +2,9 @@ package com.mellomaths.library.domain.dto;
 
 import com.mellomaths.library.domain.Book;
 import org.hibernate.validator.constraints.ISBN;
-import org.springframework.util.Assert;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
-import java.math.BigDecimal;
 
 public class NewBookDto {
 
