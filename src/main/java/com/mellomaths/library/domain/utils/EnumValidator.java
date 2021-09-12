@@ -6,7 +6,7 @@ import java.util.List;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-class EnumValidatorImpl implements ConstraintValidator<ValidateEnum, String> {
+public class EnumValidator implements ConstraintValidator<ValidateEnum, String> {
 
     List<String> valueList = null;
 

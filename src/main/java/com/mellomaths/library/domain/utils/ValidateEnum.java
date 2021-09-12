@@ -12,7 +12,7 @@ import javax.validation.ReportAsSingleViolation;
 import javax.validation.constraints.NotNull;
 
 @Documented
-@Constraint(validatedBy = EnumValidatorImpl.class)
+@Constraint(validatedBy = EnumValidator.class)
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 @NotNull(message = "Value cannot be null")
