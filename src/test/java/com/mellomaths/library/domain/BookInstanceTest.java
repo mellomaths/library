@@ -31,10 +31,19 @@ public class BookInstanceTest {
     }
 
     @Test
-    public void instantiateNewBookInstance() {
+    public void instantiateNewBookInstanceOfTypeCirculating() {
         BookInstance bookInstance = new BookInstance("9788573076103", "CIRCULATING");
         assertNotNull(bookInstance.getId());
         assertNotNull(bookInstance.getCreationDate());
+        assertEquals(BookInstanceType.CIRCULATING, bookInstance.getType());
+    }
+
+    @Test
+    public void instantiateNewBookInstanceOfTypeRestricted() {
+        BookInstance bookInstance = new BookInstance("9788573076103", "RESTRICTED");
+        assertNotNull(bookInstance.getId());
+        assertNotNull(bookInstance.getCreationDate());
+        assertEquals(BookInstanceType.RESTRICTED, bookInstance.getType());
     }
 
     @Test
