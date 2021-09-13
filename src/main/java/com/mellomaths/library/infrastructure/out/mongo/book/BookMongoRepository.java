@@ -2,7 +2,7 @@ package com.mellomaths.library.infrastructure.out.mongo.book;
 
 import com.mellomaths.library.domain.dto.BookDto;
 import com.mellomaths.library.domain.repository.BookRepository;
-import com.mellomaths.library.infrastructure.out.mongo.configuration.BookRepositoryConfiguration;
+import com.mellomaths.library.infrastructure.out.mongo.configuration.BookRepositoryMongoConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
@@ -11,10 +11,10 @@ import org.springframework.stereotype.Component;
 @Primary
 public class BookMongoRepository implements BookRepository {
 
-    private final BookRepositoryConfiguration repository;
+    private final BookRepositoryMongoConfiguration repository;
 
     @Autowired
-    public BookMongoRepository(final BookRepositoryConfiguration repository) {
+    public BookMongoRepository(final BookRepositoryMongoConfiguration repository) {
         this.repository = repository;
     }
 

@@ -2,7 +2,9 @@ package com.mellomaths.library.infrastructure.out.mongo.book;
 
 import com.mellomaths.library.domain.dto.BookInstanceDto;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+@Document(collection = "book_instance")
 public class BookInstanceDocument extends BookInstanceDto {
     @Id
     private final String id;
