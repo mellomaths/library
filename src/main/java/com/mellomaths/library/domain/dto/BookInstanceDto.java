@@ -16,7 +16,7 @@ public class BookInstanceDto {
         this.type = type;
     }
 
-    public BookInstanceDto(String creationDate, String isbn, String type) {
+    protected BookInstanceDto(String creationDate, String isbn, String type) {
         this.creationDate = creationDate;
         this.isbn = isbn;
         this.type = type;

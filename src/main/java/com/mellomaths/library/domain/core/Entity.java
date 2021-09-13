@@ -1,5 +1,6 @@
 package com.mellomaths.library.domain.core;
 
+import java.text.ParseException;
 import java.util.Objects;
 
 public class Entity {

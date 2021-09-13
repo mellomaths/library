@@ -14,4 +14,9 @@ public class PatronInMemoryRepository implements PatronRepository {
     public void save(PatronDto patronDto) {
         storage.put(patronDto.getId(), patronDto);
     }
+
+    @Override
+    public PatronDto findById(String id) {
+        return storage.get(id);
+    }
 }

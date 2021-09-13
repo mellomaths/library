@@ -14,7 +14,7 @@ public class PatronDto {
         this.type = type;
     }
 
-    public PatronDto(String creationDate, String type) {
+    protected PatronDto(String creationDate, String type) {
         this.creationDate = creationDate;
         this.type = type;
     }

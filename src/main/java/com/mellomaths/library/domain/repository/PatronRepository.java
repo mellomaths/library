@@ -6,4 +6,6 @@ public interface PatronRepository {
 
     void save(PatronDto patronDto);
 
+    PatronDto findById(String id);
+
 }

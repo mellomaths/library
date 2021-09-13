@@ -17,7 +17,7 @@ public class BookDto {
         this.isbn = isbn;
     }
 
-    public BookDto(String creationDate, String title, String price, String isbn) {
+    protected BookDto(String creationDate, String title, String price, String isbn) {
         this.creationDate = creationDate;
         this.title = title;
         this.price = price;

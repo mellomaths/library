@@ -1,8 +1,10 @@
 package com.mellomaths.library.domain;
 
 import com.mellomaths.library.domain.core.Entity;
+import com.mellomaths.library.domain.dto.BookDto;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
 
 public class Book extends Entity {
 
@@ -15,6 +17,22 @@ public class Book extends Entity {
         this.title = title;
         this.price = new BigDecimal(price);
         this.isbn = isbn;
+    }
+
+    public Book(String id, String creationDate, String title, String price, String isbn) {
+        super(id, creationDate);
+        this.title = title;
+        this.price = new BigDecimal(price);
+        this.isbn = isbn;
+    }
+
+    public static Book fromDto(BookDto bookDto) {
+        return new Book(
+                bookDto.getId(),
+                bookDto.getCreationDate(),
+                bookDto.getTitle(),
+                bookDto.getPrice(),
+                bookDto.getIsbn());
     }
 
     public String getTitle() {

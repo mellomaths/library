@@ -1,37 +1,45 @@
 package com.mellomaths.library.domain.core;
 
+import com.mellomaths.library.domain.exception.ParseCustomDateException;
+
 import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Objects;
 
 public class CustomDate implements Serializable {
 
+    private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss";
+    private static final SimpleDateFormat formatter = new SimpleDateFormat(DATE_PATTERN);
+
     private static final long serialVersionUID = 7495691006149214808L;
 
-    private final LocalDateTime value;
+    private final Date value;
 
     public CustomDate() {
-        this.value = LocalDateTime.now();
+        this.value = new Date();
     }
 
-    public CustomDate(LocalDateTime value) {
+    public CustomDate(Date value) {
         this.value = value;
     }
 
     public static CustomDate of(String value) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        LocalDateTime datetime = LocalDateTime.parse(value, formatter);
-        return new CustomDate(datetime);
+        try {
+            return new CustomDate(formatter.parse(value));
+        } catch (ParseException ex) {
+            throw new ParseCustomDateException(ex.getMessage());
+        }
     }
 
-    public LocalDateTime getValue() {
-        return this.value;
+    public Date getValue() {
+        return value;
     }
 
     @Override
     public String toString() {
-        return value.toString();
+        return formatter.format(value);
     }
 
     @Override

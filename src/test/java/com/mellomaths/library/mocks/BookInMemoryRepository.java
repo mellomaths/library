@@ -26,4 +26,9 @@ public class BookInMemoryRepository implements BookRepository {
 
         return bookFound;
     }
+
+    @Override
+    public BookDto findById(String id) {
+        return storage.get(id);
+    }
 }
