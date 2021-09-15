@@ -41,4 +41,8 @@ public class BookDocument extends BookDto {
     public BookDto toDto() {
         return new BookDto(id, creationDate, title, price, isbn, instances.stream().map(BookInstanceDocument::toDto).collect(Collectors.toList()));
     }
+
+    public void addNewInstance(BookInstanceDocument instance) {
+        this.instances.add(instance);
+    }
 }

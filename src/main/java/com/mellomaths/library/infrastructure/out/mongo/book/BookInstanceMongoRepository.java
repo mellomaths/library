@@ -3,11 +3,14 @@ package com.mellomaths.library.infrastructure.out.mongo.book;
 import com.mellomaths.library.domain.dto.BookInstanceDto;
 import com.mellomaths.library.domain.repository.BookInstanceRepository;
 import com.mellomaths.library.infrastructure.out.mongo.configuration.BookInstanceRepositoryMongoConfiguration;
+import com.mellomaths.library.infrastructure.out.mongo.configuration.BookRepositoryMongoConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -15,16 +18,25 @@ import java.util.stream.Collectors;
 public class BookInstanceMongoRepository implements BookInstanceRepository {
 
     private final BookInstanceRepositoryMongoConfiguration repository;
+    private final BookRepositoryMongoConfiguration bookRepository;
 
     @Autowired
-    public BookInstanceMongoRepository(final BookInstanceRepositoryMongoConfiguration repository) {
+    public BookInstanceMongoRepository(final BookInstanceRepositoryMongoConfiguration repository, final BookRepositoryMongoConfiguration bookRepository) {
         this.repository = repository;
+        this.bookRepository = bookRepository;
     }
 
     @Override
     public void save(BookInstanceDto bookInstanceDto) {
-        BookInstanceDocument document = BookInstanceDocument.from(bookInstanceDto);
-        repository.save(document);
+        BookInstanceDocument instance = BookInstanceDocument.from(bookInstanceDto);
+        repository.save(instance);
+
+        Optional<BookDocument> bookDocument = bookRepository.findById(bookInstanceDto.getBookId());
+        if (bookDocument.isPresent()) {
+            BookDocument book = bookDocument.get();
+            book.addNewInstance(instance);
+            bookRepository.save(book);
+        }
     }
 
     @Override
