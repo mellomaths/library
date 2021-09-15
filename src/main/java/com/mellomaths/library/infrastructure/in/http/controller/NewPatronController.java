@@ -14,7 +14,7 @@ import javax.validation.Valid;
 @RestController
 public class NewPatronController {
 
-    private PatronRepository patronRepository;
+    private final PatronRepository patronRepository;
 
     @Autowired
     public NewPatronController(PatronRepository patronRepository) {

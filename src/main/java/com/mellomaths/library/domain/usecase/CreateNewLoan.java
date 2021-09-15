@@ -28,7 +28,7 @@ public class CreateNewLoan {
         Book book = Book.fromDto(new GetBook(bookRepository, bookInstanceRepository).execute(bookId));
         Patron patron = Patron.fromDto(new GetPatron(patronRepository).execute(newLoanDto.getPatronId()));
 
-        Loan loan = patron.createLoan(book, newLoanDto.getDays());
+        Loan loan = patron.createLoan(book, newLoanDto.getDaysToReturn());
         LoanDto loanDto = LoanDto.fromModel(loan);
         loanRepository.save(loanDto);
         bookInstanceRepository.save(BookInstanceDto.fromModel(loan.getBookInstance()));

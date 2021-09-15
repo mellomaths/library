@@ -51,9 +51,9 @@ public class BookInstance extends Entity {
         return !this.isLoaned && this.canBeLoanedTo(patron);
     }
 
-    public Loan createLoan(Patron patron, int days) {
+    public Loan createLoan(Patron patron, Integer daysToReturn) {
         this.isLoaned = true;
-        return new Loan(patron, this, days);
+        return new Loan(patron, this, daysToReturn);
     }
 
     public String getBookId() {

@@ -80,11 +80,11 @@ public class LoanTest {
         book.createNewInstance("CIRCULATING");
 
         Patron regularPatron = new Patron("REGULAR");
-        assertFalse(regularPatron.isLoanDeadlineValid(0));
+        assertFalse(regularPatron.isDaysToReturnLoanValid(0));
         assertThrows(InvalidLoanDeadlineException.class, () -> regularPatron.createLoan(book, 0));
 
         Patron researcher = new Patron("RESEARCHER");
-        assertTrue(researcher.isLoanDeadlineValid(0));
+        assertTrue(researcher.isDaysToReturnLoanValid(0));
         assertDoesNotThrow(() -> researcher.createLoan(book, 0));
     }
 
@@ -96,11 +96,11 @@ public class LoanTest {
         Book book = new Book("Design Patterns", "89.95", "9788573076103");
 
         Patron regularPatron = new Patron("REGULAR");
-        assertFalse(regularPatron.isLoanDeadlineValid(limitPlusOne));
+        assertFalse(regularPatron.isDaysToReturnLoanValid(limitPlusOne));
         assertThrows(InvalidLoanDeadlineException.class, () -> regularPatron.createLoan(book, limitPlusOne));
 
         Patron researcher = new Patron("RESEARCHER");
-        assertFalse(researcher.isLoanDeadlineValid(limitPlusOne));
+        assertFalse(researcher.isDaysToReturnLoanValid(limitPlusOne));
         assertThrows(InvalidLoanDeadlineException.class, () -> researcher.createLoan(book, limitPlusOne));
     }
 

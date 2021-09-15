@@ -21,12 +21,12 @@ public class LoanDocument extends LoanDto {
                 loanDto.getPatronId(),
                 loanDto.getBookId(),
                 loanDto.getBookInstanceId(),
-                loanDto.getDays(),
+                loanDto.getDaysToReturn(),
                 loanDto.getDueDate()
         );
     }
 
     public LoanDto toDto() {
-        return new LoanDto(id, creationDate, patronId, bookId, bookInstanceId, days, dueDate);
+        return new LoanDto(id, creationDate, patronId, bookId, bookInstanceId, daysToReturn, dueDate);
     }
 }

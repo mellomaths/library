@@ -10,15 +10,15 @@ public class NewLoanDto {
     private String patronId;
 
     @Range(min = 1, max = 60)
-    private int days;
+    private Integer daysToReturn;
 
     public NewLoanDto(String patronId) {
         this.patronId = patronId;
     }
 
-    public NewLoanDto(String patronId, int days) {
+    public NewLoanDto(String patronId, Integer daysToReturn) {
         this.patronId = patronId;
-        this.days = days;
+        this.daysToReturn = daysToReturn;
     }
 
     public String getPatronId() {
@@ -29,11 +29,11 @@ public class NewLoanDto {
         this.patronId = patronId;
     }
 
-    public int getDays() {
-        return days;
+    public Integer getDaysToReturn() {
+        return daysToReturn;
     }
 
-    public void setDays(int days) {
-        this.days = days;
+    public void setDaysToReturn(Integer daysToReturn) {
+        this.daysToReturn = daysToReturn;
     }
 }

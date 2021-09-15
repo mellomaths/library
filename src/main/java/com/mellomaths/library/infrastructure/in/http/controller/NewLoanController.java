@@ -23,8 +23,8 @@ public class NewLoanController {
 
     private final BookRepository bookRepository;
     private final BookInstanceRepository bookInstanceRepository;
-    private PatronRepository patronRepository;
-    private LoanRepository loanRepository;
+    private final PatronRepository patronRepository;
+    private final LoanRepository loanRepository;
 
     @Autowired
     public NewLoanController(final BookRepository bookRepository, final BookInstanceRepository bookInstanceRepository, final PatronRepository patronRepository, final LoanRepository loanRepository) {

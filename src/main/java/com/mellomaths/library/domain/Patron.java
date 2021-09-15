@@ -33,8 +33,8 @@ public class Patron extends Entity {
         return type.equals(PatronType.RESEARCHER);
     }
 
-    public Loan createLoan(Book book, int days) {
-        if (!isLoanDeadlineValid(days)) {
+    public Loan createLoan(Book book, Integer daysToReturn) {
+        if (!isDaysToReturnLoanValid(daysToReturn)) {
             throw new InvalidLoanDeadlineException("Invalid Loan deadline time.");
         }
 
@@ -48,11 +48,11 @@ public class Patron extends Entity {
         }
 
         BookInstance instance = availableInstance.get();
-        return instance.createLoan(this, days);
+        return instance.createLoan(this, daysToReturn);
     }
 
-    public boolean isLoanDeadlineValid(int days) {
-        return type.acceptLoanTime(days);
+    public boolean isDaysToReturnLoanValid(Integer daysToReturn) {
+        return type.acceptLoanTime(daysToReturn);
     }
 
     public PatronType getType() {

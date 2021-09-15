@@ -11,17 +11,17 @@ public class Loan extends Entity {
         LIMIT_TIME_IN_DAYS = 60;
     }
 
-    private final int days;
+    private final Integer daysToReturn;
     private final Patron patron;
     private final BookInstance bookInstance;
     private final CustomDate dueDate;
 
-    public Loan(Patron patron, BookInstance bookInstance, int days) {
+    public Loan(Patron patron, BookInstance bookInstance, Integer daysToReturn) {
         super();
         this.patron = patron;
         this.bookInstance = bookInstance;
-        this.days = days;
-        this.dueDate = new CustomDate().plusDays(days);
+        this.daysToReturn = daysToReturn == null || daysToReturn == 0 ? LIMIT_TIME_IN_DAYS : daysToReturn;
+        this.dueDate = new CustomDate().plusDays(this.daysToReturn);
     }
 
     public Patron getPatron() {
@@ -44,8 +44,8 @@ public class Loan extends Entity {
         return bookInstance.getId().toString();
     }
 
-    public int getDays() {
-        return days;
+    public Integer getDaysToReturn() {
+        return daysToReturn;
     }
 
     public CustomDate getDueDate() {

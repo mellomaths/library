@@ -3,16 +3,16 @@ package com.mellomaths.library.domain;
 public enum PatronType {
     REGULAR("REGULAR") {
         @Override
-        boolean acceptLoanTime(int days) {
-            return days > 0 && days <= Loan.LIMIT_TIME_IN_DAYS;
+        boolean acceptLoanTime(Integer daysToReturn) {
+            return daysToReturn != null && daysToReturn > 0 && daysToReturn <= Loan.LIMIT_TIME_IN_DAYS;
         }
     },
     RESEARCHER("RESEARCHER") {
         @Override
-        boolean acceptLoanTime(int days) {
-            if (days == 0) return true;
+        boolean acceptLoanTime(Integer daysToReturn) {
+            if (daysToReturn == null || daysToReturn == 0) return true;
 
-            return days <= Loan.LIMIT_TIME_IN_DAYS;
+            return daysToReturn <= Loan.LIMIT_TIME_IN_DAYS;
         }
     };
 
@@ -26,5 +26,5 @@ public enum PatronType {
         return this.value;
     }
 
-    abstract boolean acceptLoanTime(int days);
+    abstract boolean acceptLoanTime(Integer daysToReturn);
 }

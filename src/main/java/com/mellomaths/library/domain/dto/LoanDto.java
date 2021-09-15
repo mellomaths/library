@@ -9,26 +9,26 @@ public class LoanDto {
     protected String patronId;
     protected String bookId;
     protected String bookInstanceId;
-    protected int days;
+    protected Integer daysToReturn;
     protected String dueDate;
 
 
-    public LoanDto(String id, String creationDate, String patronId, String bookId, String bookInstanceId, int days, String dueDate) {
+    public LoanDto(String id, String creationDate, String patronId, String bookId, String bookInstanceId, int daysToReturn, String dueDate) {
         this.id = id;
         this.creationDate = creationDate;
         this.patronId = patronId;
         this.bookId = bookId;
         this.bookInstanceId = bookInstanceId;
-        this.days = days;
+        this.daysToReturn = daysToReturn;
         this.dueDate = dueDate;
     }
 
-    protected LoanDto(String creationDate, String patronId, String bookId, String bookInstanceId, int days, String dueDate) {
+    protected LoanDto(String creationDate, String patronId, String bookId, String bookInstanceId, int daysToReturn, String dueDate) {
         this.creationDate = creationDate;
         this.patronId = patronId;
         this.bookId = bookId;
         this.bookInstanceId = bookInstanceId;
-        this.days = days;
+        this.daysToReturn = daysToReturn;
         this.dueDate = dueDate;
     }
 
@@ -39,7 +39,7 @@ public class LoanDto {
                 loan.getPatronId(),
                 loan.getBookId(),
                 loan.getBookInstanceId(),
-                loan.getDays(),
+                loan.getDaysToReturn(),
                 loan.getDueDate().toString()
         );
     }
@@ -84,12 +84,12 @@ public class LoanDto {
         this.bookInstanceId = bookInstanceId;
     }
 
-    public int getDays() {
-        return days;
+    public Integer getDaysToReturn() {
+        return daysToReturn;
     }
 
-    public void setDays(int days) {
-        this.days = days;
+    public void setDaysToReturn(Integer daysToReturn) {
+        this.daysToReturn = daysToReturn;
     }
 
     public String getDueDate() {
