@@ -4,7 +4,7 @@ import com.mellomaths.library.domain.Book;
 import com.mellomaths.library.domain.dto.BookDto;
 import com.mellomaths.library.domain.dto.NewBookDto;
 import com.mellomaths.library.domain.repository.BookRepository;
-import com.mellomaths.library.domain.usecase.validation.ValidateBookDuplication;
+import com.mellomaths.library.domain.usecase.validation.ValidateBookISBNDuplication;
 
 public class CreateNewBook {
 
@@ -15,7 +15,7 @@ public class CreateNewBook {
     }
 
     public BookDto execute(NewBookDto newBookDto) {
-        new ValidateBookDuplication(bookRepository).validate(newBookDto.getIsbn());
+        new ValidateBookISBNDuplication(bookRepository).validate(newBookDto.getIsbn());
         Book book = new Book(newBookDto.getTitle(), newBookDto.getPrice(), newBookDto.getIsbn());
         BookDto bookDto = BookDto.fromModel(book);
         bookRepository.save(bookDto);

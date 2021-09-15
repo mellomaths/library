@@ -4,11 +4,11 @@ import com.mellomaths.library.domain.dto.BookDto;
 import com.mellomaths.library.domain.exception.IsbnDuplicatedException;
 import com.mellomaths.library.domain.repository.BookRepository;
 
-public class ValidateBookDuplication {
+public class ValidateBookISBNDuplication {
 
     private final BookRepository bookRepository;
 
-    public ValidateBookDuplication(BookRepository bookRepository) {
+    public ValidateBookISBNDuplication(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
     }
 
