@@ -77,7 +77,7 @@ public class LoanTest {
     @DisplayName("Only Researchers can create a Loan with no deadline set")
     public void onlyResearchersCanCreateLoanWithNoDeadlineSet() {
         Book book = new Book("Design Patterns", "89.95", "9788573076103");
-        book.createNewInstance("CIRCULATING");
+        BookInstance instance = book.createNewInstance("CIRCULATING");
 
         Patron regularPatron = new Patron("REGULAR");
         assertFalse(regularPatron.isDaysToReturnLoanValid(0));
@@ -85,7 +85,23 @@ public class LoanTest {
 
         Patron researcher = new Patron("RESEARCHER");
         assertTrue(researcher.isDaysToReturnLoanValid(0));
-        assertDoesNotThrow(() -> researcher.createLoan(book, 0));
+        assertTrue(researcher.isDaysToReturnLoanValid(null));
+
+        Loan loanWithZeroDaysToReturn = researcher.createLoan(book, 0);
+        Date date = calculateDueDate(Loan.LIMIT_TIME_IN_DAYS);
+        assertNotNull(loanWithZeroDaysToReturn.getId());
+        assertNotNull(loanWithZeroDaysToReturn.getCreationDate());
+        assertTrue(instance.isLoaned());
+        assertEquals(book.getId().toString(), loanWithZeroDaysToReturn.getBookId());
+        assertEquals(date.toString(), loanWithZeroDaysToReturn.getDueDate().getValue().toString());
+
+        instance = book.createNewInstance("CIRCULATING");
+        Loan loanWithNullDaysToReturn = researcher.createLoan(book, null);
+        assertNotNull(loanWithNullDaysToReturn.getId());
+        assertNotNull(loanWithNullDaysToReturn.getCreationDate());
+        assertTrue(instance.isLoaned());
+        assertEquals(book.getId().toString(), loanWithNullDaysToReturn.getBookId());
+        assertEquals(date.toString(), loanWithNullDaysToReturn.getDueDate().getValue().toString());
     }
 
     @Test
