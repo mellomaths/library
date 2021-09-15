@@ -1,268 +1,132 @@
 package com.mellomaths.library.domain;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import com.mellomaths.library.domain.dto.*;
-import com.mellomaths.library.domain.exception.*;
-import com.mellomaths.library.domain.repository.BookInstanceRepository;
-import com.mellomaths.library.domain.repository.BookRepository;
-import com.mellomaths.library.domain.repository.LoanRepository;
-import com.mellomaths.library.domain.repository.PatronRepository;
-import com.mellomaths.library.domain.usecase.CreateNewBook;
-import com.mellomaths.library.domain.usecase.CreateNewBookInstance;
-import com.mellomaths.library.domain.usecase.CreateNewLoan;
-import com.mellomaths.library.domain.usecase.CreateNewPatron;
-import com.mellomaths.library.mocks.BookInMemoryRepository;
-import com.mellomaths.library.mocks.BookInstanceInMemoryRepository;
-import com.mellomaths.library.mocks.LoanInMemoryRepository;
-import com.mellomaths.library.mocks.PatronInMemoryRepository;
-import org.junit.jupiter.api.BeforeEach;
+import com.mellomaths.library.domain.exception.BookNotAvailableForLoanException;
+import com.mellomaths.library.domain.exception.InvalidLoanDeadlineException;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Calendar;
+import java.util.Date;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class LoanTest {
 
-    BookRepository bookRepository;
-    BookInstanceRepository bookInstanceRepository;
-    PatronRepository patronRepository;
-    LoanRepository loanRepository;
-
-    @BeforeEach
-    public void setupRepository() {
-        bookInstanceRepository = new BookInstanceInMemoryRepository();
-        bookRepository = new BookInMemoryRepository();
-        patronRepository = new PatronInMemoryRepository();
-        loanRepository = new LoanInMemoryRepository();
-    }
-
-    private Book createNewBook(String title, String price, String isbn) {
-        NewBookDto newBookDto = new NewBookDto(title, price, isbn);
-        CreateNewBook createNewBook = new CreateNewBook(bookRepository);
-        BookDto bookDto = createNewBook.execute(newBookDto);
-        return Book.fromDto(bookDto);
-    }
-
-    private BookInstance createNewBookInstance(String isbn, String type) {
-        NewBookInstanceDto newBookInstanceDto = new NewBookInstanceDto(isbn, type);
-        CreateNewBookInstance createNewBookInstance = new CreateNewBookInstance(bookRepository, bookInstanceRepository);
-        BookInstanceDto bookInstanceDto = createNewBookInstance.execute(newBookInstanceDto);
-        return BookInstance.fromDto(bookInstanceDto);
-    }
-
-    private Patron createNewPatron(String type) {
-        NewPatronDto newPatronDto = new NewPatronDto(type);
-        CreateNewPatron createNewPatron = new CreateNewPatron(patronRepository);
-        PatronDto patronDto = createNewPatron.execute(newPatronDto);
-        return Patron.fromDto(patronDto);
+    private Date calculateDueDate(int days) {
+        Date date = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.DATE, days);
+        date = calendar.getTime();
+        return date;
     }
 
     @Test
-    public void createNewLoan() {
-        CreateNewLoan createNewLoan = new CreateNewLoan(bookRepository, bookInstanceRepository, patronRepository, loanRepository);
-        Book book = createNewBook("Design Patterns", "89.95", "9788573076103");
-        createNewBookInstance("9788573076103", "RESTRICTED");
-        BookInstance instance = createNewBookInstance("9788573076103", "CIRCULATING");
-        Patron patron = createNewPatron("REGULAR");
-        LoanDto loanDto = createNewLoan.execute(book.getId().toString(), new NewLoanDto(patron.getId().toString(), 5));
-
-        assertNotNull(loanDto.getId());
-        assertNotNull(loanDto.getCreationDate());
-        assertEquals(patron.getId().toString(), loanDto.getPatronId());
-        assertEquals(book.getId().toString(), loanDto.getBookId());
-        assertEquals(instance.getId().toString(), loanDto.getBookInstanceId());
-        assertEquals(5, loanDto.getDays());
-    }
-
-    @Test
-    public void bookNotFound() {
-        Patron patron = new Patron("REGULAR");
-        Book book = null;
-        List<BookInstance> instances = new ArrayList<>();
-        BookInstance restrictedInstance = new BookInstance("9788573076103", "RESTRICTED");
-        instances.add(restrictedInstance);
-
-        assertThrows(BookNotFoundException.class, () -> new Loan(patron, book, instances, 0));
-    }
-
-    @Test
-    public void patronNotFound() {
-        Patron patron = null;
+    @DisplayName("New Loan of Circulating Book Instance to Regular Patron")
+    public void newLoanOfCirculatingBookInstanceToRegularPatron() {
         Book book = new Book("Design Patterns", "89.95", "9788573076103");
-        List<BookInstance> instances = new ArrayList<>();
-        BookInstance restrictedInstance = new BookInstance("9788573076103", "RESTRICTED");
-        instances.add(restrictedInstance);
-
-        assertThrows(PatronNotFoundException.class, () -> new Loan(patron, book, instances, 0));
-    }
-
-    @Test
-    public void regularPatronWithDeadlineGreaterThanLimit() {
+        BookInstance instance = book.createNewInstance("CIRCULATING");
         Patron patron = new Patron("REGULAR");
-        Book book = new Book("Design Patterns", "89.95", "9788573076103");
-        List<BookInstance> instances = new ArrayList<>();
-        BookInstance circulatingInstance = new BookInstance("9788573076103", "CIRCULATING");
-        instances.add(circulatingInstance);
-        BookInstance restrictedInstance = new BookInstance("9788573076103", "RESTRICTED");
-        instances.add(restrictedInstance);
+        Loan loan = patron.createLoan(book, 50);
 
-        assertThrows(InvalidLoanDeadlineException.class, () -> new Loan(patron, book, instances, 61));
+        assertNotNull(loan.getId());
+        assertNotNull(loan.getCreationDate());
+        assertTrue(instance.isLoaned());
+        assertEquals(book.getId().toString(), loan.getBookId());
+
+        Date date = calculateDueDate(50);
+        assertEquals(date.toString(), loan.getDueDate().getValue().toString());
     }
 
     @Test
-    public void researcherPatronWithDeadlineGreaterThanLimit() {
+    @DisplayName("New Loan of Circulating Book Instance to Researcher Patron")
+    public void newLoanOfCirculatingBookInstanceToResearcherPatron() {
+        Book book = new Book("Design Patterns", "89.95", "9788573076103");
+        BookInstance instance = book.createNewInstance("CIRCULATING");
         Patron patron = new Patron("RESEARCHER");
-        Book book = new Book("Design Patterns", "89.95", "9788573076103");
-        List<BookInstance> instances = new ArrayList<>();
-        BookInstance circulatingInstance = new BookInstance("9788573076103", "CIRCULATING");
-        instances.add(circulatingInstance);
-        BookInstance restrictedInstance = new BookInstance("9788573076103", "RESTRICTED");
-        instances.add(restrictedInstance);
+        Loan loan = patron.createLoan(book, 50);
 
-        assertThrows(InvalidLoanDeadlineException.class, () -> new Loan(patron, book, instances, 61));
+        assertNotNull(loan.getId());
+        assertNotNull(loan.getCreationDate());
+        assertTrue(instance.isLoaned());
+        assertEquals(book.getId().toString(), loan.getBookId());
+
+        Date date = calculateDueDate(50);
+        assertEquals(date.toString(), loan.getDueDate().getValue().toString());
     }
 
     @Test
-    public void regularPatronWithoutDeadline() {
-        Patron patron = new Patron("REGULAR");
+    @DisplayName("New Loan of Restricted Book Instance to Researcher Patron")
+    public void newLoanOfRestrictedBookInstanceToResearcherPatron() {
         Book book = new Book("Design Patterns", "89.95", "9788573076103");
-        List<BookInstance> instances = new ArrayList<>();
-        BookInstance circulatingInstance = new BookInstance("9788573076103", "CIRCULATING");
-        instances.add(circulatingInstance);
-        BookInstance restrictedInstance = new BookInstance("9788573076103", "RESTRICTED");
-        instances.add(restrictedInstance);
-
-        assertThrows(LoanDeadlineMustBeSetException.class, () -> new Loan(patron, book, instances, 0));
-    }
-
-    @Test
-    public void researcherPatronWithoutDeadline() {
+        BookInstance instance = book.createNewInstance("RESTRICTED");
         Patron patron = new Patron("RESEARCHER");
-        Book book = new Book("Design Patterns", "89.95", "9788573076103");
-        List<BookInstance> instances = new ArrayList<>();
-        BookInstance restrictedInstance = new BookInstance("9788573076103", "RESTRICTED");
-        instances.add(restrictedInstance);
+        Loan loan = patron.createLoan(book, 50);
 
-        Loan loan = new Loan(patron, book, instances, 0);
-        assertEquals(patron.getId().toString(), loan.getPatronId());
+        assertNotNull(loan.getId());
+        assertNotNull(loan.getCreationDate());
+        assertTrue(instance.isLoaned());
         assertEquals(book.getId().toString(), loan.getBookId());
-        assertEquals(restrictedInstance.getId().toString(), loan.getBookInstanceId());
-        assertEquals(60, loan.getDays());
+
+        Date date = calculateDueDate(50);
+        assertEquals(date.toString(), loan.getDueDate().getValue().toString());
     }
 
     @Test
-    public void regularPatronWithDeadline() {
-        Patron patron = new Patron("REGULAR");
+    @DisplayName("Only Researchers can create a Loan with no deadline set")
+    public void onlyResearchersCanCreateLoanWithNoDeadlineSet() {
         Book book = new Book("Design Patterns", "89.95", "9788573076103");
-        List<BookInstance> instances = new ArrayList<>();
-        BookInstance circulatingInstance = new BookInstance("9788573076103", "CIRCULATING");
-        instances.add(circulatingInstance);
+        book.createNewInstance("CIRCULATING");
 
-        Loan loan = new Loan(patron, book, instances, 50);
-        assertEquals(patron.getId().toString(), loan.getPatronId());
-        assertEquals(book.getId().toString(), loan.getBookId());
-        assertEquals(circulatingInstance.getId().toString(), loan.getBookInstanceId());
-        assertEquals(50, loan.getDays());
+        Patron regularPatron = new Patron("REGULAR");
+        assertFalse(regularPatron.isLoanDeadlineValid(0));
+        assertThrows(InvalidLoanDeadlineException.class, () -> regularPatron.createLoan(book, 0));
+
+        Patron researcher = new Patron("RESEARCHER");
+        assertTrue(researcher.isLoanDeadlineValid(0));
+        assertDoesNotThrow(() -> researcher.createLoan(book, 0));
     }
 
     @Test
-    public void researcherPatronWithDeadline() {
-        Patron patron = new Patron("RESEARCHER");
-        Book book = new Book("Design Patterns", "89.95", "9788573076103");
-        List<BookInstance> instances = new ArrayList<>();
-        BookInstance restrictedInstance = new BookInstance("9788573076103", "RESTRICTED");
-        instances.add(restrictedInstance);
+    @DisplayName("Nobody can create a loan with loan time greater than the limit")
+    public void nobodyCanCreateLoanWithDeadlineGreaterThanLimit() {
+        int limitPlusOne = Loan.LIMIT_TIME_IN_DAYS + 1;
 
-        Loan loan = new Loan(patron, book, instances, 50);
-        assertEquals(patron.getId().toString(), loan.getPatronId());
-        assertEquals(book.getId().toString(), loan.getBookId());
-        assertEquals(restrictedInstance.getId().toString(), loan.getBookInstanceId());
-        assertEquals(50, loan.getDays());
+        Book book = new Book("Design Patterns", "89.95", "9788573076103");
+
+        Patron regularPatron = new Patron("REGULAR");
+        assertFalse(regularPatron.isLoanDeadlineValid(limitPlusOne));
+        assertThrows(InvalidLoanDeadlineException.class, () -> regularPatron.createLoan(book, limitPlusOne));
+
+        Patron researcher = new Patron("RESEARCHER");
+        assertFalse(researcher.isLoanDeadlineValid(limitPlusOne));
+        assertThrows(InvalidLoanDeadlineException.class, () -> researcher.createLoan(book, limitPlusOne));
     }
 
     @Test
-    public void bookInstancesNotFound() {
-        Patron patron = new Patron("REGULAR");
+    @DisplayName("Nobody can create a loan for a book with no instances")
+    public void nobodyCanCreateLoanForBookWithNoInstances() {
         Book book = new Book("Design Patterns", "89.95", "9788573076103");
-        List<BookInstance> instances = new ArrayList<>();
 
-        assertThrows(BookNotAvailableForLoanException.class, () -> new Loan(patron, book, instances, 50));
+        Patron regularPatron = new Patron("REGULAR");
+        assertThrows(BookNotAvailableForLoanException.class, () -> regularPatron.createLoan(book, 50));
+
+        Patron researcher = new Patron("RESEARCHER");
+        assertThrows(BookNotAvailableForLoanException.class, () -> researcher.createLoan(book, 50));
     }
 
     @Test
-    public void regularPatronWithOnlyRestrictedInstancesAvailable() {
-        Patron patron = new Patron("REGULAR");
+    @DisplayName("Nobody can create a loan for a book with no available instances")
+    public void nobodyCanCreateLoanForBookWithAvailableInstances() {
         Book book = new Book("Design Patterns", "89.95", "9788573076103");
-        List<BookInstance> instances = new ArrayList<>();
-        BookInstance restrictedInstance = new BookInstance("9788573076103", "RESTRICTED");
-        instances.add(restrictedInstance);
+        book.createNewInstance("CIRCULATING");
+        Patron regularPatron = new Patron("REGULAR");
+        regularPatron.createLoan(book, 50);
 
-        assertThrows(BookNotAvailableForLoanException.class, () -> new Loan(patron, book, instances, 50));
+        assertThrows(BookNotAvailableForLoanException.class, () -> regularPatron.createLoan(book, 50));
+
+        Patron researcher = new Patron("RESEARCHER");
+        assertThrows(BookNotAvailableForLoanException.class, () -> researcher.createLoan(book, 50));
     }
-
-    @Test
-    public void regularPatronWithAllTypesOfInstancesAvailable() {
-        Patron patron = new Patron("REGULAR");
-        Book book = new Book("Design Patterns", "89.95", "9788573076103");
-        List<BookInstance> instances = new ArrayList<>();
-        BookInstance restrictedInstance = new BookInstance("9788573076103", "RESTRICTED");
-        instances.add(restrictedInstance);
-        BookInstance circulatingInstance = new BookInstance("9788573076103", "CIRCULATING");
-        instances.add(circulatingInstance);
-
-        Loan loan = new Loan(patron, book, instances, 50);
-        assertEquals(patron.getId().toString(), loan.getPatronId());
-        assertEquals(book.getId().toString(), loan.getBookId());
-        assertEquals(circulatingInstance.getId().toString(), loan.getBookInstanceId());
-        assertEquals(50, loan.getDays());
-    }
-
-    @Test
-    public void researcherPatronWithOnlyRestrictedInstancesAvailable() {
-        Patron patron = new Patron("RESEARCHER");
-        Book book = new Book("Design Patterns", "89.95", "9788573076103");
-        List<BookInstance> instances = new ArrayList<>();
-        BookInstance restrictedInstance = new BookInstance("9788573076103", "RESTRICTED");
-        instances.add(restrictedInstance);
-
-        Loan loan = new Loan(patron, book, instances, 50);
-        assertEquals(patron.getId().toString(), loan.getPatronId());
-        assertEquals(book.getId().toString(), loan.getBookId());
-        assertEquals(restrictedInstance.getId().toString(), loan.getBookInstanceId());
-        assertEquals(50, loan.getDays());
-    }
-
-    @Test
-    public void researcherPatronWithOnlyCirculatingInstancesAvailable() {
-        Patron patron = new Patron("RESEARCHER");
-        Book book = new Book("Design Patterns", "89.95", "9788573076103");
-        List<BookInstance> instances = new ArrayList<>();
-        BookInstance circulatingInstance = new BookInstance("9788573076103", "CIRCULATING");
-        instances.add(circulatingInstance);
-
-        Loan loan = new Loan(patron, book, instances, 50);
-        assertEquals(patron.getId().toString(), loan.getPatronId());
-        assertEquals(book.getId().toString(), loan.getBookId());
-        assertEquals(circulatingInstance.getId().toString(), loan.getBookInstanceId());
-        assertEquals(50, loan.getDays());
-    }
-
-    @Test
-    public void researcherPatronWithAllTypesOfInstancesAvailable() {
-        Patron patron = new Patron("RESEARCHER");
-        Book book = new Book("Design Patterns", "89.95", "9788573076103");
-        List<BookInstance> instances = new ArrayList<>();
-        BookInstance restrictedInstance = new BookInstance("9788573076103", "RESTRICTED");
-        instances.add(restrictedInstance);
-        BookInstance circulatingInstance = new BookInstance("9788573076103", "CIRCULATING");
-        instances.add(circulatingInstance);
-
-        Loan loan = new Loan(patron, book, instances, 50);
-        assertEquals(patron.getId().toString(), loan.getPatronId());
-        assertEquals(book.getId().toString(), loan.getBookId());
-        assertEquals(restrictedInstance.getId().toString(), loan.getBookInstanceId());
-        assertEquals(50, loan.getDays());
-    }
-
 }

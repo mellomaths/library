@@ -10,30 +10,26 @@ public class LoanDto {
     protected String bookId;
     protected String bookInstanceId;
     protected int days;
+    protected String dueDate;
 
-    public LoanDto(String id, String creationDate, String patronId, String bookId, String bookInstanceId) {
-        this.id = id;
-        this.creationDate = creationDate;
-        this.patronId = patronId;
-        this.bookId = bookId;
-        this.bookInstanceId = bookInstanceId;
-    }
 
-    public LoanDto(String id, String creationDate, String patronId, String bookId, String bookInstanceId, int days) {
+    public LoanDto(String id, String creationDate, String patronId, String bookId, String bookInstanceId, int days, String dueDate) {
         this.id = id;
         this.creationDate = creationDate;
         this.patronId = patronId;
         this.bookId = bookId;
         this.bookInstanceId = bookInstanceId;
         this.days = days;
+        this.dueDate = dueDate;
     }
 
-    protected LoanDto(String creationDate, String patronId, String bookId, String bookInstanceId, int days) {
+    protected LoanDto(String creationDate, String patronId, String bookId, String bookInstanceId, int days, String dueDate) {
         this.creationDate = creationDate;
         this.patronId = patronId;
         this.bookId = bookId;
         this.bookInstanceId = bookInstanceId;
         this.days = days;
+        this.dueDate = dueDate;
     }
 
     public static LoanDto fromModel(Loan loan) {
@@ -43,7 +39,8 @@ public class LoanDto {
                 loan.getPatronId(),
                 loan.getBookId(),
                 loan.getBookInstanceId(),
-                loan.getDays()
+                loan.getDays(),
+                loan.getDueDate().toString()
         );
     }
 
@@ -93,5 +90,13 @@ public class LoanDto {
 
     public void setDays(int days) {
         this.days = days;
+    }
+
+    public String getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(String dueDate) {
+        this.dueDate = dueDate;
     }
 }

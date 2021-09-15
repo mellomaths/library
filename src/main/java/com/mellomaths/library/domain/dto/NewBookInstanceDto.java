@@ -36,8 +36,4 @@ public class NewBookInstanceDto {
     public void setType(String type) {
         this.type = type;
     }
-
-    public BookInstance toModel() {
-        return new BookInstance(isbn, type);
-    }
 }

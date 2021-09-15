@@ -14,7 +14,7 @@ public class CreateNewPatron {
     }
 
     public PatronDto execute(NewPatronDto newPatronDto) {
-        Patron patron = newPatronDto.toModel();
+        Patron patron = new Patron(newPatronDto.getType());
         PatronDto patronDto = PatronDto.fromModel(patron);
         repository.save(patronDto);
         return patronDto;

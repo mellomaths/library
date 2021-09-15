@@ -6,20 +6,32 @@ public class BookInstanceDto {
 
     protected String id;
     protected String creationDate;
+    protected String bookId;
     protected String isbn;
     protected String type;
 
-    public BookInstanceDto(String id, String creationDate, String isbn, String type) {
+    public BookInstanceDto(String id, String creationDate, String bookId, String isbn, String type) {
         this.id = id;
         this.creationDate = creationDate;
+        this.bookId = bookId;
         this.isbn = isbn;
         this.type = type;
     }
 
-    protected BookInstanceDto(String creationDate, String isbn, String type) {
+    protected BookInstanceDto(String creationDate, String bookId, String isbn, String type) {
         this.creationDate = creationDate;
+        this.bookId = bookId;
         this.isbn = isbn;
         this.type = type;
+    }
+
+    public static BookInstanceDto fromModel(BookInstance bookInstance) {
+        return new BookInstanceDto(
+                bookInstance.getId().toString(),
+                bookInstance.getCreationDate().toString(),
+                bookInstance.getBookId(),
+                bookInstance.getIsbn(),
+                bookInstance.getType().toString());
     }
 
     public String getId() {
@@ -38,6 +50,14 @@ public class BookInstanceDto {
         this.creationDate = creationDate;
     }
 
+    public String getBookId() {
+        return bookId;
+    }
+
+    public void setBookId(String bookId) {
+        this.bookId = bookId;
+    }
+
     public String getIsbn() {
         return isbn;
     }
@@ -52,13 +72,5 @@ public class BookInstanceDto {
 
     public void setType(String type) {
         this.type = type;
-    }
-
-    public static BookInstanceDto fromModel(BookInstance bookInstance) {
-        return new BookInstanceDto(
-                bookInstance.getId().toString(),
-                bookInstance.getCreationDate().toString(),
-                bookInstance.getIsbn(),
-                bookInstance.getType().toString());
     }
 }

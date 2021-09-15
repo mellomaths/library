@@ -31,4 +31,16 @@ public class BookInstanceInMemoryRepository implements BookInstanceRepository {
         return booksFound;
     }
 
+    @Override
+    public List<BookInstanceDto> findByBookId(String bookId) {
+        List<BookInstanceDto> booksFound = new ArrayList<>();
+        for (BookInstanceDto book : storage.values()) {
+            if (book.getBookId().equals(bookId)) {
+                booksFound.add(book);
+            }
+        }
+
+        return booksFound;
+    }
+
 }

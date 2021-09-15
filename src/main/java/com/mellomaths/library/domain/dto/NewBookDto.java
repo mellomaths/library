@@ -47,8 +47,4 @@ public class NewBookDto {
     public void setIsbn(String isbn) {
         this.isbn = isbn;
     }
-
-    public Book toModel() {
-        return new Book(title, price, isbn);
-    }
 }

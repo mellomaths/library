@@ -9,16 +9,14 @@ import com.mellomaths.library.domain.usecase.validation.ValidateBookDuplication;
 public class CreateNewBook {
 
     private final BookRepository bookRepository;
-    private final ValidateBookDuplication validateBookDuplication;
 
     public CreateNewBook(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
-        this.validateBookDuplication = new ValidateBookDuplication(bookRepository);
     }
 
     public BookDto execute(NewBookDto newBookDto) {
-        Book book = newBookDto.toModel();
-        validateBookDuplication.validate(newBookDto.getIsbn());
+        new ValidateBookDuplication(bookRepository).validate(newBookDto.getIsbn());
+        Book book = new Book(newBookDto.getTitle(), newBookDto.getPrice(), newBookDto.getIsbn());
         BookDto bookDto = BookDto.fromModel(book);
         bookRepository.save(bookDto);
         return bookDto;

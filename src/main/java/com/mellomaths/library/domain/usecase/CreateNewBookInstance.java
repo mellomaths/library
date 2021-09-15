@@ -1,10 +1,10 @@
 package com.mellomaths.library.domain.usecase;
 
+import com.mellomaths.library.domain.Book;
 import com.mellomaths.library.domain.BookInstance;
 import com.mellomaths.library.domain.dto.BookDto;
 import com.mellomaths.library.domain.dto.BookInstanceDto;
 import com.mellomaths.library.domain.dto.NewBookInstanceDto;
-import com.mellomaths.library.domain.exception.IsbnNotFoundException;
 import com.mellomaths.library.domain.repository.BookInstanceRepository;
 import com.mellomaths.library.domain.repository.BookRepository;
 
@@ -19,12 +19,11 @@ public class CreateNewBookInstance {
     }
 
     public BookInstanceDto execute(NewBookInstanceDto newBookInstanceDto) {
-        BookInstance bookInstance = newBookInstanceDto.toModel();
-        BookDto bookDto = bookRepository.findByIsbn(bookInstance.getIsbn());
-        if (bookDto == null) {
-            throw new IsbnNotFoundException("ISBN " + newBookInstanceDto.getIsbn() + " was not found. Please register the book before creating new instances.");
-        }
-        BookInstanceDto bookInstanceDto = BookInstanceDto.fromModel(bookInstance);
+        BookDto bookDto = new SearchBookByISBN(bookRepository, bookInstanceRepository).execute(newBookInstanceDto.getIsbn());
+        Book book = Book.fromDto(bookDto);
+        BookInstance instance = book.createNewInstance(newBookInstanceDto.getType());
+
+        BookInstanceDto bookInstanceDto = BookInstanceDto.fromModel(instance);
         bookInstanceRepository.save(bookInstanceDto);
         return bookInstanceDto;
     }

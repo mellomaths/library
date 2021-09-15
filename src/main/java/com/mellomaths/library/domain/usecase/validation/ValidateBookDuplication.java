@@ -1,6 +1,5 @@
 package com.mellomaths.library.domain.usecase.validation;
 
-import com.mellomaths.library.domain.Book;
 import com.mellomaths.library.domain.dto.BookDto;
 import com.mellomaths.library.domain.exception.IsbnDuplicatedException;
 import com.mellomaths.library.domain.repository.BookRepository;

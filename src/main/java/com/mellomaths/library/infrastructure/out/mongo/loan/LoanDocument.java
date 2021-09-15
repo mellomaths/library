@@ -1,15 +1,16 @@
 package com.mellomaths.library.infrastructure.out.mongo.loan;
 
-import com.mellomaths.library.domain.Loan;
 import com.mellomaths.library.domain.dto.LoanDto;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+@Document(collection = "loan")
 public class LoanDocument extends LoanDto {
     @Id
     private final String id;
 
-    public LoanDocument(String id, String creationDate, String patronId, String bookId, String bookInstanceId, int days) {
-        super(creationDate, patronId, bookId, bookInstanceId, days);
+    public LoanDocument(String id, String creationDate, String patronId, String bookId, String bookInstanceId, int days, String dueDate) {
+        super(creationDate, patronId, bookId, bookInstanceId, days, dueDate);
         this.id = id;
     }
 
@@ -20,11 +21,12 @@ public class LoanDocument extends LoanDto {
                 loanDto.getPatronId(),
                 loanDto.getBookId(),
                 loanDto.getBookInstanceId(),
-                loanDto.getDays()
+                loanDto.getDays(),
+                loanDto.getDueDate()
         );
     }
 
     public LoanDto toDto() {
-        return new LoanDto(id, creationDate, patronId, bookId, bookInstanceId, days);
+        return new LoanDto(id, creationDate, patronId, bookId, bookInstanceId, days, dueDate);
     }
 }

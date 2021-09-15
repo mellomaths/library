@@ -5,6 +5,7 @@ import com.mellomaths.library.domain.exception.ParseCustomDateException;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
@@ -15,7 +16,7 @@ public class CustomDate implements Serializable {
 
     private static final long serialVersionUID = 7495691006149214808L;
 
-    private final Date value;
+    private Date value;
 
     public CustomDate() {
         this.value = new Date();
@@ -31,6 +32,14 @@ public class CustomDate implements Serializable {
         } catch (ParseException ex) {
             throw new ParseCustomDateException(ex.getMessage());
         }
+    }
+
+    public CustomDate plusDays(int days) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(value);
+        calendar.add(Calendar.DATE, days);
+        value = calendar.getTime();
+        return this;
     }
 
     public Date getValue() {

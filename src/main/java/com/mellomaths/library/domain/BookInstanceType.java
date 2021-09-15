@@ -1,8 +1,18 @@
 package com.mellomaths.library.domain;
 
 public enum BookInstanceType {
-    RESTRICTED("RESTRICTED"),
-    CIRCULATING("CIRCULATING");
+    RESTRICTED("RESTRICTED") {
+        @Override
+        boolean acceptPatron(Patron patron) {
+            return patron.isResearcher();
+        }
+    },
+    CIRCULATING("CIRCULATING") {
+        @Override
+        boolean acceptPatron(Patron patron) {
+            return true;
+        }
+    };
 
     private final String value;
 
@@ -13,4 +23,6 @@ public enum BookInstanceType {
     public String toString() {
         return this.value;
     }
+
+    abstract boolean acceptPatron(Patron patron);
 }

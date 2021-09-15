@@ -25,8 +25,4 @@ public class NewPatronDto {
     public void setType(String type) {
         this.type = type;
     }
-
-    public Patron toModel() {
-        return new Patron(type);
-    }
 }
