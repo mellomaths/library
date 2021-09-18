@@ -10,6 +10,11 @@ public class BookInstanceDto {
     protected String isbn;
     protected String type;
 
+    public BookInstanceDto(String id, String bookId) {
+        this.id = id;
+        this.bookId = bookId;
+    }
+
     public BookInstanceDto(String id, String creationDate, String bookId, String isbn, String type) {
         this.id = id;
         this.creationDate = creationDate;

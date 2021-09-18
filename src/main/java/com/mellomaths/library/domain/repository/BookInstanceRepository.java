@@ -6,6 +6,7 @@ import java.util.List;
 
 public interface BookInstanceRepository {
     void save(BookInstanceDto bookInstanceDto);
+    BookInstanceDto findById(String id);
     List<BookInstanceDto> findByIsbn(String isbn);
     List<BookInstanceDto> findByBookId(String bookId);
 }

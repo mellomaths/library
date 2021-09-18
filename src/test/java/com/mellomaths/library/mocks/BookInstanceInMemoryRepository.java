@@ -5,10 +5,8 @@ import com.mellomaths.library.domain.dto.BookDto;
 import com.mellomaths.library.domain.dto.BookInstanceDto;
 import com.mellomaths.library.domain.repository.BookInstanceRepository;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class BookInstanceInMemoryRepository implements BookInstanceRepository {
 
@@ -17,6 +15,18 @@ public class BookInstanceInMemoryRepository implements BookInstanceRepository {
     @Override
     public void save(BookInstanceDto bookInstance) {
         storage.put(bookInstance.getId(), bookInstance);
+    }
+
+    @Override
+    public BookInstanceDto findById(String id) {
+        BookInstanceDto instanceFound = null;
+        for (BookInstanceDto instance : storage.values()) {
+            if (instance.getId().equals(id)) {
+                instanceFound = instance;
+            }
+        }
+
+        return instanceFound;
     }
 
     @Override

@@ -6,28 +6,22 @@ public class LoanDto {
 
     protected String id;
     protected String creationDate;
-    protected String patronId;
-    protected String bookId;
-    protected String bookInstanceId;
+    protected PatronDto patron;
+    protected BookInstanceDto bookInstance;
     protected Integer daysToReturn;
     protected String dueDate;
 
-
-    public LoanDto(String id, String creationDate, String patronId, String bookId, String bookInstanceId, int daysToReturn, String dueDate) {
+    public LoanDto(String id, String creationDate, PatronDto patron, BookInstanceDto bookInstance, int daysToReturn, String dueDate) {
         this.id = id;
         this.creationDate = creationDate;
-        this.patronId = patronId;
-        this.bookId = bookId;
-        this.bookInstanceId = bookInstanceId;
+        this.patron = patron;
+        this.bookInstance = bookInstance;
         this.daysToReturn = daysToReturn;
         this.dueDate = dueDate;
     }
 
-    protected LoanDto(String creationDate, String patronId, String bookId, String bookInstanceId, int daysToReturn, String dueDate) {
+    protected LoanDto(String creationDate, int daysToReturn, String dueDate) {
         this.creationDate = creationDate;
-        this.patronId = patronId;
-        this.bookId = bookId;
-        this.bookInstanceId = bookInstanceId;
         this.daysToReturn = daysToReturn;
         this.dueDate = dueDate;
     }
@@ -36,9 +30,8 @@ public class LoanDto {
         return new LoanDto(
                 loan.getId().toString(),
                 loan.getCreationDate().toString(),
-                loan.getPatronId(),
-                loan.getBookId(),
-                loan.getBookInstanceId(),
+                PatronDto.fromModel(loan.getPatron()),
+                BookInstanceDto.fromModel(loan.getBookInstance()),
                 loan.getDaysToReturn(),
                 loan.getDueDate().toString()
         );
@@ -60,28 +53,20 @@ public class LoanDto {
         this.creationDate = creationDate;
     }
 
-    public String getPatronId() {
-        return patronId;
+    public PatronDto getPatron() {
+        return patron;
     }
 
-    public void setPatronId(String patronId) {
-        this.patronId = patronId;
+    public void setPatron(PatronDto patron) {
+        this.patron = patron;
     }
 
-    public String getBookId() {
-        return bookId;
+    public BookInstanceDto getBookInstance() {
+        return bookInstance;
     }
 
-    public void setBookId(String bookId) {
-        this.bookId = bookId;
-    }
-
-    public String getBookInstanceId() {
-        return bookInstanceId;
-    }
-
-    public void setBookInstanceId(String bookInstanceId) {
-        this.bookInstanceId = bookInstanceId;
+    public void setBookInstance(BookInstanceDto bookInstance) {
+        this.bookInstance = bookInstance;
     }
 
     public Integer getDaysToReturn() {

@@ -39,7 +39,7 @@ public class NewLoanController {
         try {
             CreateNewLoan createNewLoan = new CreateNewLoan(bookRepository, bookInstanceRepository, patronRepository, loanRepository);
             return createNewLoan.execute(bookId, newLoanDto);
-        } catch (BookNotAvailableForLoanException | PatronNotFoundException | BookNotFoundException | InvalidLoanDeadlineException | LoanDeadlineMustBeSetException ex) {
+        } catch (BookNotAvailableForLoanException | PatronNotFoundException | BookNotFoundException | InvalidLoanDeadlineException | LoanDeadlineMustBeSetException | LimitOfLoansPerPatronException ex) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage(), ex);
         }
     }

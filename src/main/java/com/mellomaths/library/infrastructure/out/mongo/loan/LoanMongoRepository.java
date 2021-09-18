@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 @Primary
 public class LoanMongoRepository implements LoanRepository {
@@ -22,5 +25,12 @@ public class LoanMongoRepository implements LoanRepository {
     public void save(LoanDto loanDto) {
         LoanDocument document = LoanDocument.from(loanDto);
         repository.save(document);
+    }
+
+    @Override
+    public List<LoanDto> findByPatronId(String patronId) {
+        return repository
+                .findByPatronId(patronId)
+                .stream().map(LoanDocument::toDto).collect(Collectors.toList());
     }
 }

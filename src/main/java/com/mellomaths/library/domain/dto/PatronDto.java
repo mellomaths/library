@@ -8,6 +8,10 @@ public class PatronDto {
     protected String creationDate;
     protected String type;
 
+    public PatronDto(String id) {
+        this.id = id;
+    }
+
     public PatronDto(String id, String creationDate, String type) {
         this.id = id;
         this.creationDate = creationDate;

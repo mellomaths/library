@@ -40,6 +40,16 @@ public class BookInstanceMongoRepository implements BookInstanceRepository {
     }
 
     @Override
+    public BookInstanceDto findById(String id) {
+        Optional<BookInstanceDocument> document = repository.findById(id);
+        if (document.isEmpty()) {
+            return null;
+        }
+
+        return document.get().toDto();
+    }
+
+    @Override
     public List<BookInstanceDto> findByIsbn(String isbn) {
         List<BookInstanceDocument> documents = repository.findByIsbn(isbn);
         return documents.stream().map(BookInstanceDocument::toDto).collect(Collectors.toList());

@@ -8,6 +8,7 @@ import com.mellomaths.library.domain.repository.BookInstanceRepository;
 import com.mellomaths.library.domain.repository.BookRepository;
 import com.mellomaths.library.domain.repository.LoanRepository;
 import com.mellomaths.library.domain.repository.PatronRepository;
+import com.mellomaths.library.domain.usecase.validation.ValidateLimitOfLoansPerPatron;
 
 
 public class CreateNewLoan {
@@ -25,6 +26,8 @@ public class CreateNewLoan {
     }
 
     public LoanDto execute(String bookId, NewLoanDto newLoanDto) {
+        new ValidateLimitOfLoansPerPatron(loanRepository, patronRepository, bookInstanceRepository).execute(newLoanDto.getPatronId());
+
         Book book = Book.fromDto(new GetBook(bookRepository, bookInstanceRepository).execute(bookId));
         Patron patron = Patron.fromDto(new GetPatron(patronRepository).execute(newLoanDto.getPatronId()));
 
